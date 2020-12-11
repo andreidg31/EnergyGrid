@@ -20,10 +20,6 @@ public final class Contract {
     return this.cost;
   }
 
-  public void setCost(int cost) {
-    this.cost = cost;
-  }
-
   public int getContractMonths() {
     return contractMonths;
   }
@@ -37,8 +33,19 @@ public final class Contract {
     this.consumer.setContract(null);
     this.distributor.removeContract(this);
   }
-
+  public void payDistributor() {
+    this.distributor.setBudget(this.distributor.getBudget() + this.cost);
+  }
   public void setContractMonths(int contractMonths) {
     this.contractMonths = contractMonths;
+  }
+
+  @Override
+  public String toString() {
+    return "Contract{" +
+            "distributor=" + distributor.getId() +
+            ", cost=" + cost +
+            ", contractMonths=" + contractMonths +
+            '}';
   }
 }

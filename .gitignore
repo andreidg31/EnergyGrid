@@ -3,4 +3,4 @@ checker/*
 out/*
 *.zip
 proiect-etapa1.iml
-src/target/*
+checkstyle.txt

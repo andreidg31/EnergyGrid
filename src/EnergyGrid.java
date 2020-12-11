@@ -47,27 +47,109 @@ public final class EnergyGrid {
 
   public void simulate() {
 
+    addSalaries();
+    generateContracts();
+    //System.out.println(this.consumers.values());
+    payContracts();
+    payCosts();
+    clearBankrupt();
     for (int counter = 0; counter < this.numberOfTurns; counter++) {
       if (this.distributors.isEmpty()) {
         break;
       }
+      updateMonthly(counter);
+      addSalaries();
+      generateContracts();
+     // System.out.println(this.consumers.values());
+      payContracts();
+      payCosts();
+      clearBankrupt();
     }
   }
 
-  public void generateContracts() {
+  private void generateContracts() {
     ArrayList<Distributor> sortedDist = new ArrayList<Distributor>(this.distributors.values());
     sortedDist.sort(Utils.sortProdCost());
     ArrayList<Contract> contractsToSign = new ArrayList<Contract>();
-    for (Consumer c: this.consumers.values()) {
-      if (!c.isBankrupt() && !(c.getContract() == null)) {
-        Contract contract = new Contract(c, sortedDist.get(0));
+
+    for (Consumer consumer: this.consumers.values()) {
+      if (!consumer.isBankrupt()) {
+        Contract contract = new Contract(consumer, sortedDist.get(0));
         contractsToSign.add(contract);
       }
     }
-
+    clearFinishedContracts();
     for (Contract contract: contractsToSign) {
-      contract.appendContract();
+      Consumer consumer = this.consumers.get(contract.getConsumerId());
+      if (consumer.getContract() == null) {
+        contract.appendContract();
+      }
     }
+  }
+
+  private void clearFinishedContracts() {
+    for (Consumer consumer: this.consumers.values()) {
+      Contract contract = consumer.getContract();
+      if (contract != null) {
+        if (contract.getContractMonths() == 0) {
+          contract.expire();
+        }
+      }
+    }
+  }
+
+  private void clearBankrupt() {
+    for (Consumer consumer: this.consumers.values()) {
+      Contract contract = consumer.getContract();
+      if (contract != null && consumer.isBankrupt()) {
+        contract.expire();
+      }
+    }
+  }
+
+  private void updateMonthly(int month) {
+    // Add new consumers
+    for (Consumer consumer: this.newConsumers.get(month)) {
+      this.consumers.put(consumer.getId(), consumer);
+    }
+    // Change costs
+    for (Change change: this.changes.get(month)) {
+      Distributor d = this.distributors.get(change.getId());
+      if (d != null) {
+        d.setInfrastructureCost(change.getNewInfrastructureCost());
+        d.setProductionCost(change.getNewProductionCost());
+      }
+    }
+  }
+
+  private void addSalaries() {
+    for (Consumer consumer: this.consumers.values()) {
+      if (!consumer.isBankrupt()) {
+        consumer.setBudget(consumer.getBudget() + consumer.getMonthlyIncome());
+      }
+    }
+  }
+
+  private void payContracts() {
+    for (Consumer consumer: this.consumers.values()) {
+      // Exclude bankrupt consumers
+      if (consumer.isBankrupt()){
+        continue;
+      }
+      consumer.payContracts();
+    }
+  }
+
+  private void payCosts() {
+    ArrayList<Distributor> toRemove = new ArrayList<Distributor>();
+    for (Distributor d: this.distributors.values()) {
+      d.setBudget(d.getBudget() - d.calculateCosts());
+      if (d.getBudget() < 0) {
+        this.bankruptDist.add(d);
+        toRemove.add(d);
+      }
+    }
+    this.distributors.values().removeAll(toRemove);
   }
 
   public OutputData generateOutput() {
@@ -93,10 +175,22 @@ public final class EnergyGrid {
       }
       else {
         distributorOutput.setIsBankrupt(false);
-        //distributorOutput.setContracts(generateOutputContracts(distributor));
+        distributorOutput.setContracts(generateOutputContracts(distributor));
       }
       output.getDistributors().add(distributorOutput);
     }
     return output;
+  }
+
+  private ArrayList<ContractOutput> generateOutputContracts(Distributor distributor) {
+    ArrayList<ContractOutput> contracts = new ArrayList<ContractOutput>();
+    for (Contract contract: distributor.getContracts()) {
+      ContractOutput out = new ContractOutput();
+      out.setConsumerId(contract.getConsumerId());
+      out.setRemainedContractMonths(contract.getContractMonths());
+      out.setPrice(contract.getCost());
+      contracts.add(out);
+    }
+    return contracts;
   }
 }

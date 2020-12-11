@@ -1,8 +1,8 @@
 import input.DistributorInput;
 
-import java.util.ArrayList;
+
+import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 public final class Distributor {
   private final int id;
@@ -71,6 +71,10 @@ public final class Distributor {
 
   public int calculateCosts() {
     return this.infrastructureCost + this.productionCost * this.contracts.size();
+  }
+
+  public Collection<Contract> getContracts() {
+    return this.contracts.values();
   }
 
   public void addContract(Contract contract) {

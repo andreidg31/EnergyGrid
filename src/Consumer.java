@@ -7,7 +7,7 @@ public final class Consumer {
   private int budget;
   private int monthlyIncome;
   private boolean isBankrupt = false;
-  private int toPay = 0;
+  private Contract toPay = null;
   private Contract contract = null;
 
   public Consumer(ConsumerInput cInput) {
@@ -25,7 +25,7 @@ public final class Consumer {
   }
 
   public int getBudget() {
-    return budget;
+    return this.budget;
   }
 
   public void setBudget(int budget) {
@@ -44,12 +44,17 @@ public final class Consumer {
 
   public void setContract(Contract contract) {this.contract = contract;}
 
+  public Contract getToPay() {return this.toPay;}
+
   public void payContracts() {
-    int priceToPay = (6 * this.toPay) / 5 + contract.getCost();
+    int priceToPay = contract.getCost();
+    if (this.toPay != null) {
+      priceToPay += (6 * this.toPay.getCost()) / 5;
+    }
     contract.setContractMonths(contract.getContractMonths() - 1);
     if (this.budget < priceToPay) {
-      if (this.toPay == 0) {
-        this.toPay = priceToPay;
+      if (this.toPay == null) {
+        this.toPay = this.contract;
       }
       else {
         this.setBankrupt();
@@ -57,6 +62,11 @@ public final class Consumer {
     }
     else {
       this.budget -= priceToPay;
+      this.contract.payDistributor();
+      if (this.toPay != null) {
+        this.toPay.payDistributor();
+        this.toPay = null;
+      }
     }
   }
 
@@ -73,8 +83,9 @@ public final class Consumer {
     return "Consumer{" +
             "id=" + id +
             ", budget=" + budget +
-            ", monthlyIncome=" + monthlyIncome +
             ", isBankrupt=" + isBankrupt +
+            ", toPay=" + toPay +
+            ", contract=" + contract +
             "}\n";
   }
 }
