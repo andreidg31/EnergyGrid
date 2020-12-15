@@ -1,6 +1,6 @@
 package output;
 
-public class ConsumerOutput {
+public final class ConsumerOutput {
   private int id;
   private boolean isBankrupt;
   private int budget;
@@ -9,7 +9,7 @@ public class ConsumerOutput {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(final int id) {
     this.id = id;
   }
 
@@ -17,7 +17,7 @@ public class ConsumerOutput {
     return isBankrupt;
   }
 
-  public void setIsBankrupt(boolean bankrupt) {
+  public void setIsBankrupt(final boolean bankrupt) {
     isBankrupt = bankrupt;
   }
 
@@ -25,7 +25,7 @@ public class ConsumerOutput {
     return budget;
   }
 
-  public void setBudget(int budget) {
+  public void setBudget(final int budget) {
     this.budget = budget;
   }
 }

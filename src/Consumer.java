@@ -1,16 +1,15 @@
 import input.ConsumerInput;
 
-import java.util.ArrayList;
 
 public final class Consumer {
-  private int id;
+  private final int id;
   private int budget;
-  private int monthlyIncome;
+  private final int monthlyIncome;
   private boolean isBankrupt = false;
   private Contract toPay = null;
   private Contract contract = null;
 
-  public Consumer(ConsumerInput cInput) {
+  public Consumer(final ConsumerInput cInput) {
     this.id = cInput.getId();
     this.budget = cInput.getInitialBudget();
     this.monthlyIncome = cInput.getMonthlyIncome();
@@ -20,15 +19,11 @@ public final class Consumer {
     return id;
   }
 
-  public void setId(int id) {
-    this.id = id;
-  }
-
   public int getBudget() {
     return this.budget;
   }
 
-  public void setBudget(int budget) {
+  public void setBudget(final int budget) {
     this.budget = budget;
   }
 
@@ -36,31 +31,34 @@ public final class Consumer {
     return monthlyIncome;
   }
 
-  public void setMonthlyIncome(int monthlyIncome) {
-    this.monthlyIncome = monthlyIncome;
+  public Contract getContract() {
+    return this.contract;
   }
 
-  public Contract getContract() {return this.contract;}
+  public void setContract(final Contract contract) {
+    this.contract = contract;
+  }
 
-  public void setContract(Contract contract) {this.contract = contract;}
+  public Contract getToPay() {
+    return this.toPay;
+  }
 
-  public Contract getToPay() {return this.toPay;}
-
+  /**
+   * The Consumer pays the contracts he has to,
+   */
   public void payContracts() {
     int priceToPay = contract.getCost();
     if (this.toPay != null) {
-      priceToPay += (6 * this.toPay.getCost()) / 5;
+      priceToPay += Math.floor(1.2 *  this.toPay.getCost());
     }
     contract.setContractMonths(contract.getContractMonths() - 1);
     if (this.budget < priceToPay) {
       if (this.toPay == null) {
         this.toPay = this.contract;
-      }
-      else {
+      } else {
         this.setBankrupt();
       }
-    }
-    else {
+    } else {
       this.budget -= priceToPay;
       this.contract.payDistributor();
       if (this.toPay != null) {
@@ -74,18 +72,10 @@ public final class Consumer {
     return isBankrupt;
   }
 
+  /**
+   * Makes the consumer bankrupt
+   */
   public void setBankrupt() {
     this.isBankrupt = true;
-  }
-
-  @Override
-  public String toString() {
-    return "Consumer{" +
-            "id=" + id +
-            ", budget=" + budget +
-            ", isBankrupt=" + isBankrupt +
-            ", toPay=" + toPay +
-            ", contract=" + contract +
-            "}\n";
   }
 }

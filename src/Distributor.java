@@ -13,7 +13,7 @@ public final class Distributor {
   private final LinkedHashMap<Integer, Contract> contracts =
           new LinkedHashMap<Integer, Contract>();
 
-  public Distributor(DistributorInput dInput) {
+  public Distributor(final DistributorInput dInput) {
     this.id = dInput.getId();
     this.contractLength = dInput.getContractLength();
     this.budget = dInput.getInitialBudget();
@@ -28,16 +28,11 @@ public final class Distributor {
   public int getContractLength() {
     return contractLength;
   }
-
-  public void setContractLength(int contractLength) {
-    this.contractLength = contractLength;
-  }
-
   public int getBudget() {
     return budget;
   }
 
-  public void setBudget(int budget) {
+  public void setBudget(final int budget) {
     this.budget = budget;
   }
 
@@ -45,7 +40,7 @@ public final class Distributor {
     return infrastructureCost;
   }
 
-  public void setInfrastructureCost(int infrastructureCost) {
+  public void setInfrastructureCost(final int infrastructureCost) {
     this.infrastructureCost = infrastructureCost;
   }
 
@@ -53,22 +48,34 @@ public final class Distributor {
     return productionCost;
   }
 
-  public void setProductionCost(int productionCost) {
+  public void setProductionCost(final int productionCost) {
     this.productionCost = productionCost;
   }
 
+  /**
+   * Calculates the cost of a new contract
+   * @return cost of the contract
+   */
   public long calculateContractCost() {
     if (this.contracts.size() == 0) {
       return this.infrastructureCost + this.productionCost + this.getProfit();
     }
-    return Math.round(Math.floor((double)this.infrastructureCost / this.contracts.size()) +
-            this.productionCost + this.getProfit());
+    return Math.round(Math.floor((double) this.infrastructureCost / this.contracts.size())
+            + this.productionCost + this.getProfit());
   }
 
+  /**
+   * Calculaltes the profit
+   * @return profit
+   */
   private long getProfit() {
     return Math.round(Math.floor(0.2 * this.productionCost));
   }
 
+  /**
+   * Calculates total cost
+   * @return monthly expenses
+   */
   public int calculateCosts() {
     return this.infrastructureCost + this.productionCost * this.contracts.size();
   }
@@ -77,22 +84,19 @@ public final class Distributor {
     return this.contracts.values();
   }
 
-  public void addContract(Contract contract) {
+  /**
+   * Adds a contract
+   * @param contract
+   */
+  public void addContract(final Contract contract) {
     this.contracts.put(contract.getConsumerId(), contract);
   }
 
-  public void removeContract(Contract contract) {
+  /**
+   * Removes a contract if it exists
+   * @param contract
+   */
+  public void removeContract(final Contract contract) {
     this.contracts.remove(contract.getConsumerId());
-  }
-
-  @Override
-  public String toString() {
-    return "Distributor{" +
-            "id=" + id +
-            ", contractLength=" + contractLength +
-            ", budget=" + budget +
-            ", infrastructureCost=" + infrastructureCost +
-            ", productionCost=" + productionCost +
-            "}\n";
   }
 }

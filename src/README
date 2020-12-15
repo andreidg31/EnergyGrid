@@ -1,0 +1,15 @@
+Pentru citirea respectiv afisarea temei am creat 2 foldere cu clase utile:
+    -input-> ce contine clasale folosite la input
+    -output-> ce contine clasele folosite la output
+
+Rezolvarea temei a constat in creerea de contracte si respectarea ciclului unei
+luni. Evenimentele ce se intampla intr-o luna sunt:
+    - Se schimba preturi, se adauga noi consumatori
+    - Consumatorii primeste banii lunari isi primesc salariul
+    - Consumatorii cauta contracte si semneaza contracte
+    - Consumatorii platest contractele
+    - Distributorii platesc costurile
+
+Clasa contract a fost metoda mea de a lega cele doua hashmap-uri din clasa
+EnergyGrid (ce simuleaza jocul). Prin contract un consumator plateste
+distributorilui ce trebuie sa ii plateasca.

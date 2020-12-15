@@ -1,7 +1,7 @@
 package input;
 
 import java.util.ArrayList;
-public class InputData {
+public final class InputData {
   private int numberOfTurns;
   private InitialData initialData;
   private ArrayList<MonthlyUpdates> monthlyUpdates = new ArrayList<MonthlyUpdates>();
@@ -10,7 +10,7 @@ public class InputData {
     return numberOfTurns;
   }
 
-  public void setNumberOfTurns(int numberOfTurns) {
+  public void setNumberOfTurns(final int numberOfTurns) {
     this.numberOfTurns = numberOfTurns;
   }
 
@@ -18,7 +18,7 @@ public class InputData {
     return initialData;
   }
 
-  public void setInitialData(InitialData initialData) {
+  public void setInitialData(final InitialData initialData) {
     this.initialData = initialData;
   }
 
@@ -26,7 +26,7 @@ public class InputData {
     return monthlyUpdates;
   }
 
-  public void setMonthlyUpdates(ArrayList<MonthlyUpdates> monthlyUpdates) {
+  public void setMonthlyUpdates(final ArrayList<MonthlyUpdates> monthlyUpdates) {
     this.monthlyUpdates = monthlyUpdates;
   }
 }

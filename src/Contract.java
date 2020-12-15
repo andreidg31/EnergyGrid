@@ -5,11 +5,11 @@ public final class Contract {
   private int cost;
   private int contractMonths;
 
-  public Contract(Consumer c, Distributor d) {
+  public Contract(final Consumer c, final Distributor d) {
     this.consumer = c;
     this.distributor = d;
     this.contractMonths = d.getContractLength();
-    this.cost = (int)d.calculateContractCost();
+    this.cost = (int) d.calculateContractCost();
   }
 
   public int getConsumerId() {
@@ -24,28 +24,30 @@ public final class Contract {
     return contractMonths;
   }
 
+  /**
+   * Appends the contract to the consumer and the distributor
+   */
   public void appendContract() {
     this.consumer.setContract(this);
     this.distributor.addContract(this);
   }
 
+  /**
+   * Removes the contract from the consumer and distributor
+   */
   public void expire() {
     this.consumer.setContract(null);
     this.distributor.removeContract(this);
   }
+
+  /**
+   * Pays the distributor the amount decided
+   */
   public void payDistributor() {
     this.distributor.setBudget(this.distributor.getBudget() + this.cost);
   }
-  public void setContractMonths(int contractMonths) {
-    this.contractMonths = contractMonths;
-  }
 
-  @Override
-  public String toString() {
-    return "Contract{" +
-            "distributor=" + distributor.getId() +
-            ", cost=" + cost +
-            ", contractMonths=" + contractMonths +
-            '}';
+  public void setContractMonths(final int contractMonths) {
+    this.contractMonths = contractMonths;
   }
 }

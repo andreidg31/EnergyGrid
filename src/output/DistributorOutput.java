@@ -2,7 +2,7 @@ package output;
 
 import java.util.ArrayList;
 
-public class DistributorOutput {
+public final class DistributorOutput {
   private int id;
   private int budget;
   private boolean isBankrupt;
@@ -12,7 +12,7 @@ public class DistributorOutput {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(final int id) {
     this.id = id;
   }
 
@@ -20,7 +20,7 @@ public class DistributorOutput {
     return budget;
   }
 
-  public void setBudget(int budget) {
+  public void setBudget(final int budget) {
     this.budget = budget;
   }
 
@@ -28,7 +28,7 @@ public class DistributorOutput {
     return isBankrupt;
   }
 
-  public void setIsBankrupt(boolean bankrupt) {
+  public void setIsBankrupt(final boolean bankrupt) {
     isBankrupt = bankrupt;
   }
 
@@ -36,7 +36,7 @@ public class DistributorOutput {
     return contracts;
   }
 
-  public void setContracts(ArrayList<ContractOutput> contracts) {
+  public void setContracts(final ArrayList<ContractOutput> contracts) {
     this.contracts = contracts;
   }
 }

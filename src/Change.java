@@ -2,10 +2,10 @@ import input.CostChanges;
 
 public final class Change {
   private int id;
-  private int newInfrastructureCost;
-  private int newProductionCost;
+  private final int newInfrastructureCost;
+  private final int newProductionCost;
 
-  public Change (final CostChanges change) {
+  public Change(final CostChanges change) {
     this.id = change.getId();
     this.newInfrastructureCost = change.getInfrastructureCost();
     this.newProductionCost = change.getProductionCost();
@@ -19,15 +19,8 @@ public final class Change {
     return newInfrastructureCost;
   }
 
-  public void setNewInfrastructureCost(int newInfrastructureCost) {
-    this.newInfrastructureCost = newInfrastructureCost;
-  }
-
   public int getNewProductionCost() {
     return newProductionCost;
   }
 
-  public void setNewProductionCost(int newProductionCost) {
-    this.newProductionCost = newProductionCost;
-  }
 }

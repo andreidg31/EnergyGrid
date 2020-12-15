@@ -3,22 +3,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import input.InputData;
 import output.OutputData;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Scanner;
 import java.io.File;
 
-public class Main {
+public final class Main {
 
-    public static void main(String[] args) throws Exception {
-        String extra = "";
+    /**
+     * For coding style
+     */
+    private Main() {
+
+    }
+
+    /**
+     * Entry point for the aplication
+     * @param args args[0] -> input file, args[1] -> output file
+     * @throws Exception
+     */
+    public static void main(final String[] args) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        InputData input = objectMapper.readValue(new File(extra + args[0]), InputData.class);
+        InputData input = objectMapper.readValue(new File(args[0]), InputData.class);
 
-        EnergyGrid grid = new EnergyGrid(input);
-        grid.simulate();
+        EnergyGrid.createInstance(input);
+        EnergyGrid.getInstance().simulate();
 
-        OutputData output = grid.generateOutput();
-        objectMapper.writeValue(new File(extra + args[1]), output);
+        OutputData output = EnergyGrid.getInstance().generateOutput();
+        objectMapper.writeValue(new File(args[1]), output);
     }
 }

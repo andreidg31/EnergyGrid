@@ -21,8 +21,9 @@ public final class EnergyGrid {
           new ArrayList<ArrayList<Consumer>>();
   private final ArrayList<ArrayList<Change>> changes = new ArrayList<ArrayList<Change>>();
   private final ArrayList<Distributor> bankruptDist = new ArrayList<Distributor>();
+  private static EnergyGrid instance = null;
 
-  public EnergyGrid(InputData input) {
+  private EnergyGrid(final InputData input) {
     this.numberOfTurns = input.getNumberOfTurns();
     // Add initial consumers
     for (ConsumerInput consumer : input.getInitialData().getConsumers()) {
@@ -45,11 +46,25 @@ public final class EnergyGrid {
     }
   }
 
+  public static EnergyGrid getInstance() {
+    return instance;
+  }
+
+  /**
+   * Creates the instance based on input data
+   * @param inputData
+   */
+  public static void createInstance(final InputData inputData) {
+    instance = new EnergyGrid(inputData);
+  }
+
+  /**
+   * Simulates the game
+   */
   public void simulate() {
 
     addSalaries();
     generateContracts();
-    //System.out.println(this.consumers.values());
     payContracts();
     payCosts();
     clearBankrupt();
@@ -60,21 +75,22 @@ public final class EnergyGrid {
       updateMonthly(counter);
       addSalaries();
       generateContracts();
-     // System.out.println(this.consumers.values());
       payContracts();
       payCosts();
       clearBankrupt();
     }
   }
 
+  /**
+   * Generates the contracts for the users
+   */
   private void generateContracts() {
     ArrayList<Distributor> sortedDist = new ArrayList<Distributor>(this.distributors.values());
     sortedDist.sort(Utils.sortProdCost());
     ArrayList<Contract> contractsToSign = new ArrayList<Contract>();
-
     for (Consumer consumer: this.consumers.values()) {
       if (!consumer.isBankrupt()) {
-        Contract contract = new Contract(consumer, sortedDist.get(0));
+        Contract contract = ContractFactory.createContract(consumer, sortedDist.get(0));
         contractsToSign.add(contract);
       }
     }
@@ -87,17 +103,21 @@ public final class EnergyGrid {
     }
   }
 
+  /**
+   * Removes the finished contracts
+   */
   private void clearFinishedContracts() {
     for (Consumer consumer: this.consumers.values()) {
       Contract contract = consumer.getContract();
-      if (contract != null) {
-        if (contract.getContractMonths() == 0) {
+      if (contract != null && contract.getContractMonths() == 0) {
           contract.expire();
-        }
       }
     }
   }
 
+  /**
+   * Clears bankrupt consumers contracts
+   */
   private void clearBankrupt() {
     for (Consumer consumer: this.consumers.values()) {
       Contract contract = consumer.getContract();
@@ -107,7 +127,11 @@ public final class EnergyGrid {
     }
   }
 
-  private void updateMonthly(int month) {
+  /**
+   * Adds new consumers, and updates distributers costs
+   * @param month
+   */
+  private void updateMonthly(final int month) {
     // Add new consumers
     for (Consumer consumer: this.newConsumers.get(month)) {
       this.consumers.put(consumer.getId(), consumer);
@@ -122,6 +146,9 @@ public final class EnergyGrid {
     }
   }
 
+  /**
+   * Adds the salaries of the consumers
+   */
   private void addSalaries() {
     for (Consumer consumer: this.consumers.values()) {
       if (!consumer.isBankrupt()) {
@@ -133,7 +160,7 @@ public final class EnergyGrid {
   private void payContracts() {
     for (Consumer consumer: this.consumers.values()) {
       // Exclude bankrupt consumers
-      if (consumer.isBankrupt()){
+      if (consumer.isBankrupt()) {
         continue;
       }
       consumer.payContracts();
@@ -152,6 +179,10 @@ public final class EnergyGrid {
     this.distributors.values().removeAll(toRemove);
   }
 
+  /**
+   * Generates the output data for checker
+   * @return
+   */
   public OutputData generateOutput() {
     OutputData output = new OutputData();
     for (Consumer consumer: this.consumers.values()) {
@@ -172,8 +203,7 @@ public final class EnergyGrid {
       if (distributor.getBudget() < 0) {
         distributorOutput.setIsBankrupt(true);
         distributorOutput.setContracts(new ArrayList<>());
-      }
-      else {
+      } else {
         distributorOutput.setIsBankrupt(false);
         distributorOutput.setContracts(generateOutputContracts(distributor));
       }
@@ -182,7 +212,12 @@ public final class EnergyGrid {
     return output;
   }
 
-  private ArrayList<ContractOutput> generateOutputContracts(Distributor distributor) {
+  /**
+   * Generates a list of contracts for output
+   * @param distributor
+   * @return output contracts
+   */
+  private ArrayList<ContractOutput> generateOutputContracts(final Distributor distributor) {
     ArrayList<ContractOutput> contracts = new ArrayList<ContractOutput>();
     for (Contract contract: distributor.getContracts()) {
       ContractOutput out = new ContractOutput();
