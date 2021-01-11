@@ -18,7 +18,7 @@ public final class Distributor {
     this.contractLength = dInput.getContractLength();
     this.budget = dInput.getInitialBudget();
     this.infrastructureCost = dInput.getInitialInfrastructureCost();
-    this.productionCost = dInput.getInitialProductionCost();
+    this.productionCost = 0;//dInput.getInitialProductionCost();
   }
 
   public int getId() {

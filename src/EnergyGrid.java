@@ -39,7 +39,7 @@ public final class EnergyGrid {
       update.getNewConsumers().forEach(consumerInput -> newC.add(new Consumer(consumerInput)));
 
       ArrayList<Change> chg = new ArrayList<Change>();
-      update.getCostsChanges().forEach(costChanges -> chg.add(new Change(costChanges)));
+      update.getDistributorChanges().forEach(costChanges -> chg.add(new Change(costChanges)));
 
       this.newConsumers.add(newC);
       this.changes.add(chg);

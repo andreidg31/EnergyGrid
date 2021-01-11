@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 public final class MonthlyUpdates {
   private ArrayList<ConsumerInput> newConsumerInputs = new ArrayList<ConsumerInput>();
-  private ArrayList<CostChanges> costsChanges = new ArrayList<CostChanges>();
+  private ArrayList<DistributorChanges> distributorChanges = new ArrayList<DistributorChanges>();
+  private ArrayList<ProducerChanges> producerChanges = new ArrayList<ProducerChanges>();
 
   public ArrayList<ConsumerInput> getNewConsumers() {
     return newConsumerInputs;
@@ -14,11 +15,19 @@ public final class MonthlyUpdates {
     this.newConsumerInputs = newConsumerInputs;
   }
 
-  public ArrayList<CostChanges> getCostsChanges() {
-    return costsChanges;
+  public ArrayList<DistributorChanges> getDistributorChanges() {
+    return distributorChanges;
   }
 
-  public void setCostsChanges(final ArrayList<CostChanges> costsChanges) {
-    this.costsChanges = costsChanges;
+  public void setDistributorChanges(final ArrayList<DistributorChanges> distributorChanges) {
+    this.distributorChanges = distributorChanges;
+  }
+
+  public ArrayList<ProducerChanges> getProducerChanges() {
+    return producerChanges;
+  }
+
+  public void setProducerChanges(ArrayList<ProducerChanges> producerChanges) {
+    this.producerChanges = producerChanges;
   }
 }

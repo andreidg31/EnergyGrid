@@ -1,9 +1,8 @@
 package input;
 
-public final class CostChanges {
+public final class DistributorChanges {
   private int id;
   private int infrastructureCost;
-  private int productionCost;
 
   public int getId() {
     return id;
@@ -19,13 +18,5 @@ public final class CostChanges {
 
   public void setInfrastructureCost(final int infrastructureCost) {
     this.infrastructureCost = infrastructureCost;
-  }
-
-  public int getProductionCost() {
-    return productionCost;
-  }
-
-  public void setProductionCost(final int productionCost) {
-    this.productionCost = productionCost;
   }
 }
