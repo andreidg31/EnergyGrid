@@ -1,3 +1,5 @@
+package entities;
+
 import input.ConsumerInput;
 
 
@@ -6,8 +8,8 @@ public final class Consumer {
   private int budget;
   private final int monthlyIncome;
   private boolean isBankrupt = false;
-  private Contract toPay = null;
-  private Contract contract = null;
+  private ConsumerContract toPay = null;
+  private ConsumerContract consumerContract = null;
 
   public Consumer(final ConsumerInput cInput) {
     this.id = cInput.getId();
@@ -31,36 +33,36 @@ public final class Consumer {
     return monthlyIncome;
   }
 
-  public Contract getContract() {
-    return this.contract;
+  public ConsumerContract getContract() {
+    return this.consumerContract;
   }
 
-  public void setContract(final Contract contract) {
-    this.contract = contract;
+  public void setContract(final ConsumerContract consumerContract) {
+    this.consumerContract = consumerContract;
   }
 
-  public Contract getToPay() {
+  public ConsumerContract getToPay() {
     return this.toPay;
   }
 
   /**
-   * The Consumer pays the contracts he has to,
+   * The entities.Consumer pays the contracts he has to,
    */
   public void payContracts() {
-    int priceToPay = contract.getCost();
+    int priceToPay = consumerContract.getCost();
     if (this.toPay != null) {
       priceToPay += Math.floor(1.2 *  this.toPay.getCost());
     }
-    contract.setContractMonths(contract.getContractMonths() - 1);
+    consumerContract.setContractMonths(consumerContract.getContractMonths() - 1);
     if (this.budget < priceToPay) {
       if (this.toPay == null) {
-        this.toPay = this.contract;
+        this.toPay = this.consumerContract;
       } else {
         this.setBankrupt();
       }
     } else {
       this.budget -= priceToPay;
-      this.contract.payDistributor();
+      this.consumerContract.payDistributor();
       if (this.toPay != null) {
         this.toPay.payDistributor();
         this.toPay = null;

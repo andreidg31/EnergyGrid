@@ -10,6 +10,6 @@ luni. Evenimentele ce se intampla intr-o luna sunt:
     - Consumatorii platest contractele
     - Distributorii platesc costurile
 
-Clasa contract a fost metoda mea de a lega cele doua hashmap-uri din clasa
-EnergyGrid (ce simuleaza jocul). Prin contract un consumator plateste
+Clasa consumerContract a fost metoda mea de a lega cele doua hashmap-uri din clasa
+entities.EnergyGrid (ce simuleaza jocul). Prin consumerContract un consumator plateste
 distributorilui ce trebuie sa ii plateasca.

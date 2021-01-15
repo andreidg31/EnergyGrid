@@ -1,6 +1,6 @@
+import entities.EnergyGrid;
 import input.InputData;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import output.OutputData;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -24,14 +24,15 @@ public final class Main {
         Path cPath = Paths.get("");
         String path = Paths.get(cPath.toAbsolutePath().toString(),"src", args[0]).toAbsolutePath().toString();
         System.out.println(path);
+
         ObjectMapper objectMapper = new ObjectMapper();
         InputData input = objectMapper.readValue(new File(path), InputData.class);
+
         System.out.println(input.getNumberOfTurns());
-
-        /*EnergyGrid.createInstance(input);
+        EnergyGrid.setInitialData(input);
         EnergyGrid.getInstance().simulate();
-
-        OutputData output = EnergyGrid.getInstance().generateOutput();
+        /*
+        OutputData output = entities.EnergyGrid.getInstance().generateOutput();
         objectMapper.writeValue(new File(args[1]), output);
 
          */

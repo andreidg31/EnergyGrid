@@ -1,11 +1,12 @@
+package entities;
 
-public final class Contract {
+public final class ConsumerContract {
   private Consumer consumer;
   private Distributor distributor;
   private int cost;
   private int contractMonths;
 
-  public Contract(final Consumer c, final Distributor d) {
+  public ConsumerContract(final Consumer c, final Distributor d) {
     this.consumer = c;
     this.distributor = d;
     this.contractMonths = d.getContractLength();
