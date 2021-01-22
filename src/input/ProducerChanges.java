@@ -1,6 +1,6 @@
 package input;
 
-public class ProducerChanges {
+public final class ProducerChanges {
   private int id;
   private int energyPerDistributor;
 

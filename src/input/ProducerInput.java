@@ -1,6 +1,6 @@
 package input;
 
-public class ProducerInput {
+public final class ProducerInput {
 
   private int id;
   private String energyType;

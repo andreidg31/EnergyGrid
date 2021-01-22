@@ -1,8 +1,5 @@
 package entities;
 
-import entities.Distributor;
-import entities.EnergyType;
-
 import java.util.Comparator;
 
 public final class Utils {
@@ -49,11 +46,11 @@ public final class Utils {
       @Override
       public int compare(final Producer p1, Producer p2) {
         if (!(p1.isGreen() && p2.isGreen())) {
-          return Boolean.compare(p1.isGreen(), p2.isGreen());
+          return Boolean.compare(p2.isGreen(), p1.isGreen());
         }
 
         if (Float.compare(p1.getPriceKW(), p2.getPriceKW()) != 0) {
-          return Float.compare(p1.getPriceKW(), p1.getPriceKW());
+          return Float.compare(p1.getPriceKW(), p2.getPriceKW());
         }
 
         if (Integer.compare(p1.getEnergyPerDistributor(), p2.getEnergyPerDistributor()) != 0) {
@@ -74,7 +71,7 @@ public final class Utils {
       public int compare(final Producer p1, Producer p2) {
 
         if (Float.compare(p1.getPriceKW(), p2.getPriceKW()) != 0) {
-          return Float.compare(p1.getPriceKW(), p1.getPriceKW());
+          return Float.compare(p1.getPriceKW(), p2.getPriceKW());
         }
 
         if (Integer.compare(p1.getEnergyPerDistributor(), p2.getEnergyPerDistributor()) != 0) {
@@ -99,7 +96,7 @@ public final class Utils {
         }
 
         if (Float.compare(p1.getPriceKW(), p2.getPriceKW()) != 0) {
-          return Float.compare(p1.getPriceKW(), p1.getPriceKW());
+          return Float.compare(p1.getPriceKW(), p2.getPriceKW());
         }
 
         return Integer.compare(p1.getId(), p2.getId());

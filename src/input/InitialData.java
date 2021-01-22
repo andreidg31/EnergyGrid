@@ -11,23 +11,23 @@ public final class InitialData {
     return this.consumerInputs;
   }
 
-  public void setConsumers(final ArrayList<ConsumerInput> consumerInputs) {
-    this.consumerInputs = consumerInputs;
+  public void setConsumers(final ArrayList<ConsumerInput> consumerInput) {
+    this.consumerInputs = consumerInput;
   }
 
   public ArrayList<DistributorInput> getDistributors() {
     return this.distributorInputs;
   }
 
-  public void setDistributors(final ArrayList<DistributorInput> distributorInputs) {
-    this.distributorInputs = distributorInputs;
+  public void setDistributors(final ArrayList<DistributorInput> distributorInput) {
+    this.distributorInputs = distributorInput;
   }
 
   public ArrayList<ProducerInput> getProducers() {
     return producerInputs;
   }
 
-  public void setProducers(ArrayList<ProducerInput> producerInputs) {
-    this.producerInputs = producerInputs;
+  public void setProducers(ArrayList<ProducerInput> producerInput) {
+    this.producerInputs = producerInput;
   }
 }

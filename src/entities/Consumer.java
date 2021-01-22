@@ -37,8 +37,8 @@ public final class Consumer {
     return this.consumerContract;
   }
 
-  public void setContract(final ConsumerContract consumerContract) {
-    this.consumerContract = consumerContract;
+  public void setContract(final ConsumerContract conContract) {
+    this.consumerContract = conContract;
   }
 
   public ConsumerContract getToPay() {

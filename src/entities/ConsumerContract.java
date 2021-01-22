@@ -17,6 +17,9 @@ public final class ConsumerContract {
     return this.consumer.getId();
   }
 
+  public int getDistributorId() {
+    return this.distributor.getId();
+  }
   public int getCost() {
     return this.cost;
   }

@@ -1,7 +1,6 @@
 package entities;
 
 import input.DistributorChanges;
-import input.ProducerChanges;
 
 public final class DistributorChange {
   private int id;

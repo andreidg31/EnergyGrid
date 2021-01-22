@@ -1,10 +1,16 @@
 package entities;
 
-import input.*;
+import input.ConsumerInput;
+import input.DistributorInput;
+import input.InputData;
+import input.MonthlyUpdates;
+import input.ProducerInput;
 import output.ConsumerOutput;
 import output.ContractOutput;
 import output.DistributorOutput;
+import output.MonthlyStatsOutput;
 import output.OutputData;
+import output.ProducerOutput;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -21,54 +27,26 @@ public final class EnergyGrid {
           new LinkedHashMap<Integer, Producer>();
   private final ArrayList<ArrayList<Consumer>> newConsumers =
           new ArrayList<ArrayList<Consumer>>();
-  private final ArrayList<ArrayList<DistributorChange>> dChanges = new ArrayList<ArrayList<DistributorChange>>();
-  private final ArrayList<ArrayList<ProducerChange>> pChanges = new ArrayList<ArrayList<ProducerChange>>();
+  private final ArrayList<ArrayList<DistributorChange>> dChanges =
+          new ArrayList<ArrayList<DistributorChange>>();
+  private final ArrayList<ArrayList<ProducerChange>> pChanges =
+          new ArrayList<ArrayList<ProducerChange>>();
   private final ArrayList<Distributor> bankruptDist = new ArrayList<Distributor>();
-  private static EnergyGrid instance = new EnergyGrid();
 
-  private EnergyGrid() {
-  }
+  public EnergyGrid(final InputData input) {
 
-  public static EnergyGrid getInstance() {
-    if (instance == null) {
-      instance = new EnergyGrid();
-    }
-    return instance;
-  }
-
-  /**
-   * Clears remaining data
-   */
-  private void clearData() {
-    this.consumers.clear();
-    this.distributors.clear();
-    this.producers.clear();
-    this.dChanges.clear();
-    this.newConsumers.clear();
-    this.bankruptDist.clear();
-  }
-  /**
-   * Creates the instance based on input data
-   * @param input data
-   */
-  public static void setInitialData(final InputData input) {
-
-    if (instance == null) {
-      instance = getInstance();
-    }
-    instance.clearData();
-    instance.numberOfTurns = input.getNumberOfTurns();
+    this.numberOfTurns = input.getNumberOfTurns();
     // Add initial consumers
     for (ConsumerInput consumer : input.getInitialData().getConsumers()) {
-      instance.consumers.put(consumer.getId(), new Consumer(consumer));
+      this.consumers.put(consumer.getId(), new Consumer(consumer));
     }
     // Add initial distributors
     for (DistributorInput distributor : input.getInitialData().getDistributors()) {
-      instance.distributors.put(distributor.getId(), new Distributor(distributor));
+      this.distributors.put(distributor.getId(), new Distributor(distributor));
     }
     // Add initial producers
     for (ProducerInput producer : input.getInitialData().getProducers()) {
-      instance.producers.put(producer.getId(), new Producer(producer));
+      this.producers.put(producer.getId(), new Producer(producer));
     }
     // Add new consumers and changes
     for (MonthlyUpdates update : input.getMonthlyUpdates()) {
@@ -76,14 +54,16 @@ public final class EnergyGrid {
       update.getNewConsumers().forEach(consumerInput -> newC.add(new Consumer(consumerInput)));
 
       ArrayList<DistributorChange> chg = new ArrayList<DistributorChange>();
-      update.getDistributorChanges().forEach(costChanges -> chg.add(new DistributorChange(costChanges)));
+      update.getDistributorChanges()
+              .forEach(costChanges -> chg.add(new DistributorChange(costChanges)));
 
       ArrayList<ProducerChange> pChg = new ArrayList<ProducerChange>();
-      update.getProducerChanges().forEach(producerChanges -> pChg.add(new ProducerChange(producerChanges)));
+      update.getProducerChanges()
+              .forEach(producerChanges -> pChg.add(new ProducerChange(producerChanges)));
 
-      instance.newConsumers.add(newC);
-      instance.dChanges.add(chg);
-      instance.pChanges.add(pChg);
+      this.newConsumers.add(newC);
+      this.dChanges.add(chg);
+      this.pChanges.add(pChg);
     }
   }
 
@@ -93,53 +73,77 @@ public final class EnergyGrid {
   public void simulate() {
 
     addSalaries();
-    asignProducers();
+    assignProducers();
     generateContracts();
     payContracts();
     payCosts();
     clearBankrupt();
     for (int counter = 0; counter < this.numberOfTurns; counter++) {
+      // System.out.println("MONTH: " + counter);
       if (this.distributors.isEmpty()) {
         break;
       }
       updateMonthly(counter);
       addSalaries();
-      asignProducers();
+      assignProducers();
       generateContracts();
       payContracts();
       payCosts();
       clearBankrupt();
+      updateProducers(counter);
+      moveToOld();
     }
-
-    this.producers.values().forEach(producer -> System.out.println(producer));
-
+    assignProducers();
+    moveToOld();
   }
 
-
   /**
-   * Asigns producers to the distributors
+   * Populates the old contracts
    */
-  private void asignProducers() {
+  private void moveToOld() {
+    for (Producer p: this.producers.values()) {
+
+      p.moveContracts(new ArrayList<DistributorContract>(p.getCurrentContracts()));
+    }
+  }
+  /**
+   * Assigns producers to the distributors
+   */
+  private void assignProducers() {
     ArrayList<Producer> sortedProducers = new ArrayList<Producer>(this.producers.values());
-    int energyProvided = 0;
+
     for (Distributor dist: this.distributors.values()) {
-      if (dist.getProdContract() != null && !dist.getProdContract().hasChanged()) {
+      if (dist.getProdContract() == null) {
+        createProdContract(dist, sortedProducers);
         continue;
       }
-      else {
+      if (dist.getProdContract() != null && dist.getProdContract().hasChanged()) {
         dist.getProdContract().removeContract();
         dist.removeProducerContract();
-      }
-      sortedProducers = (ArrayList<Producer>)dist.getStrategy().selectProducers(sortedProducers)
-                          .stream().filter(p -> p.getDistributors() > 0).collect(Collectors.toList());
-      energyProvided = 0;
-      for (Producer p: sortedProducers) {
-        energyProvided += p.getEnergyPerDistributor();
-        if (energyProvided > dist.getEnergyNeeded()) {
-          break;
-        }
+        createProdContract(dist, sortedProducers);
       }
     }
+  }
+
+  private void createProdContract(Distributor dist, ArrayList<Producer> prod) {
+    int energyProvided = 0;
+    DistributorContract contr = new DistributorContract(dist);
+    prod = (ArrayList<Producer>) dist.getStrategy().selectProducers(prod)
+            .stream().filter(p -> p.getDistributors() > 0).collect(Collectors.toList());
+    ArrayList<Producer> producersRequired = new ArrayList<Producer>();
+    energyProvided = 0;
+    for (Producer p: prod) {
+      if (p.getDistributors() == 0) {
+        continue;
+      }
+      producersRequired.add(p);
+      energyProvided += p.getEnergyPerDistributor();
+      if (energyProvided > dist.getEnergyNeeded()) {
+        break;
+      }
+    }
+    dist.setProdContract(contr);
+    contr.setProducers(producersRequired);
   }
   /**
    * Generates the contracts for the users
@@ -150,13 +154,15 @@ public final class EnergyGrid {
     ArrayList<ConsumerContract> contractsToSign = new ArrayList<ConsumerContract>();
     for (Consumer consumer: this.consumers.values()) {
       if (!consumer.isBankrupt()) {
-        ConsumerContract consumerContract = ConsDistContractFactory.createContract(consumer, sortedDist.get(0));
+        ConsumerContract consumerContract =
+                ConsDistContractFactory.createContract(consumer, sortedDist.get(0));
         contractsToSign.add(consumerContract);
       }
     }
     clearFinishedContracts();
     for (ConsumerContract consumerContract : contractsToSign) {
       Consumer consumer = this.consumers.get(consumerContract.getConsumerId());
+
       if (consumer.getContract() == null) {
         consumerContract.appendContract();
       }
@@ -189,7 +195,7 @@ public final class EnergyGrid {
 
   /**
    * Adds new consumers, and updates distributers costs
-   * @param month
+   * @param month of the game
    */
   private void updateMonthly(final int month) {
     // Add new consumers
@@ -203,6 +209,9 @@ public final class EnergyGrid {
         d.setInfrastructureCost(distributorChange.getNewInfrastructureCost());
       }
     }
+  }
+
+  private  void updateProducers(int month) {
     // Producer energy change
     for (ProducerChange producerChange : this.pChanges.get(month)) {
       Producer p = this.producers.get(producerChange.getId());
@@ -211,7 +220,6 @@ public final class EnergyGrid {
       }
     }
   }
-
   /**
    * Adds the salaries of the consumers
    */
@@ -251,6 +259,7 @@ public final class EnergyGrid {
    */
   public OutputData generateOutput() {
     OutputData output = new OutputData();
+    // Consumer output
     for (Consumer consumer: this.consumers.values()) {
       ConsumerOutput consumerOutput = new ConsumerOutput();
       consumerOutput.setId(consumer.getId());
@@ -258,13 +267,16 @@ public final class EnergyGrid {
       consumerOutput.setIsBankrupt(consumer.isBankrupt());
       output.getConsumers().add(consumerOutput);
     }
-
+    // Distributor and bankrupt distributors output
     ArrayList<Distributor> allDist = new ArrayList<Distributor>(this.distributors.values());
     allDist.addAll(this.bankruptDist);
     allDist.sort(Utils.sortById());
     for (Distributor distributor: allDist) {
       DistributorOutput distributorOutput = new DistributorOutput();
       distributorOutput.setId(distributor.getId());
+      distributorOutput.setEnergyNeededKW(distributor.getEnergyNeeded());
+      distributorOutput.setContractCost(distributor.getLastCost());
+      distributorOutput.setProducerStrategy(distributor.getStrategyString());
       distributorOutput.setBudget(distributor.getBudget());
       if (distributor.getBudget() < 0) {
         distributorOutput.setIsBankrupt(true);
@@ -275,12 +287,40 @@ public final class EnergyGrid {
       }
       output.getDistributors().add(distributorOutput);
     }
+    // Producer output
+    for (Producer p : this.producers.values()) {
+      ProducerOutput producerOutput = new ProducerOutput();
+      producerOutput.setId(p.getId());
+      producerOutput.setEnergyType(p.getEnergyType().getLabel());
+      producerOutput.setMaxDistributors(p.getMaxDistributors());
+      producerOutput.setEnergyPerDistributor(p.getEnergyPerDistributor());
+      producerOutput.setPriceKW(p.getPriceKW());
+
+      ArrayList<MonthlyStatsOutput> monthly = new ArrayList<MonthlyStatsOutput>();
+      for (int i = 1; i <= this.numberOfTurns; i++) {
+        MonthlyStatsOutput el = new MonthlyStatsOutput();
+        el.setMonth(i);
+//        ArrayList<Integer> ids = new ArrayList<Integer>();
+//        p.getOldContracts().get(i).forEach(contract -> {
+//          ids.add(contract.getDistributor().getId());
+//        });
+//        el.setDistributorsIds(ids);
+        el.setDistributorsIds(p.getOldContracts().get(i)
+                .stream()
+                .map(contract -> contract.getDistributor().getId())
+                .sorted()
+                .collect(Collectors.toList()));
+        monthly.add(el);
+      }
+      producerOutput.setMonthlyStats(monthly);
+      output.getEnergyProducers().add(producerOutput);
+    }
     return output;
   }
 
   /**
    * Generates a list of contracts for output
-   * @param distributor
+   * @param distributor for output
    * @return output contracts
    */
   private ArrayList<ContractOutput> generateOutputContracts(final Distributor distributor) {

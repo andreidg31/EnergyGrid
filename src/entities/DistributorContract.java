@@ -2,12 +2,13 @@ package entities;
 
 import java.util.ArrayList;
 
-public class DistributorContract {
+public final class DistributorContract {
   private Distributor distributor;
   private ArrayList<Producer> producers = new ArrayList<Producer>();
   private boolean isChanged = false;
 
-  public DistributorContract() {
+  public DistributorContract(Distributor distributor) {
+    this.distributor = distributor;
   }
 
   public Distributor getDistributor() {
@@ -22,18 +23,35 @@ public class DistributorContract {
     return producers;
   }
 
+  /**
+   * Sets the producers of the contract
+   * @param producers to be added
+   */
   public void setProducers(ArrayList<Producer> producers) {
     this.producers = producers;
+    for (Producer p : this.producers) {
+      p.addContract(this);
+    }
   }
 
+  /**
+   * Sets changed
+   */
   public void setChanged() {
     this.isChanged = true;
   }
 
+  /**
+   * Checks if it's changed
+   * @return true or false
+   */
   public boolean hasChanged() {
     return this.isChanged;
   }
 
+  /**
+   * Removes all the contracts
+   */
   public void removeContract() {
     for (Producer p: this.producers) {
       p.removeContract(this);

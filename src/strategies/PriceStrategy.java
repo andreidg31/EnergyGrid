@@ -6,14 +6,14 @@ import entities.Utils;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class PriceStrategy implements Strategy {
+public final class PriceStrategy implements Strategy {
 
   private static final PriceStrategy instance = new PriceStrategy();
 
   /**
    * For conding style;
    */
-  private PriceStrategy(){
+  private PriceStrategy() {
 
   }
 

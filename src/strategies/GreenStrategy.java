@@ -6,14 +6,14 @@ import entities.Utils;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class GreenStrategy implements Strategy {
+public final class GreenStrategy implements Strategy {
 
   private static final GreenStrategy instance = new GreenStrategy();
 
   /**
    * For conding style;
    */
-  private GreenStrategy(){
+  private GreenStrategy() {
 
   }
 

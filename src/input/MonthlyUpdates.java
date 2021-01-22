@@ -11,8 +11,8 @@ public final class MonthlyUpdates {
     return newConsumerInputs;
   }
 
-  public void setNewConsumers(final ArrayList<ConsumerInput> newConsumerInputs) {
-    this.newConsumerInputs = newConsumerInputs;
+  public void setNewConsumers(final ArrayList<ConsumerInput> newConsumerInput) {
+    this.newConsumerInputs = newConsumerInput;
   }
 
   public ArrayList<DistributorChanges> getDistributorChanges() {

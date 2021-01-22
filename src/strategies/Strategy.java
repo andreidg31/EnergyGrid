@@ -6,5 +6,10 @@ import entities.Producer;
 import java.util.ArrayList;
 
 public interface Strategy {
-  public ArrayList<Producer> selectProducers(final ArrayList<Producer> producers);
+  /**
+   * Sorts the producers based on the strategy chosen
+   * @param producers to be sorted
+   * @return sorted array
+   */
+  ArrayList<Producer> selectProducers(ArrayList<Producer> producers);
 }

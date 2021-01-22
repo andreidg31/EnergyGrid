@@ -1,11 +1,10 @@
 package entities;
 
-import entities.EnergyType;
 import input.ProducerInput;
 
 import java.util.ArrayList;
 
-public class Producer {
+public final class Producer {
   private final int id;
   private EnergyType energyType;
   private int maxDistributors;
@@ -33,6 +32,14 @@ public class Producer {
     return id;
   }
 
+  public EnergyType getEnergyType() {
+    return energyType;
+  }
+
+  public int getMaxDistributors() {
+    return maxDistributors;
+  }
+
   public float getPriceKW() {
     return priceKW;
   }
@@ -45,20 +52,42 @@ public class Producer {
     return this.distributors;
   }
 
+  public ArrayList<DistributorContract> getCurrentContracts() {
+    return currentContracts;
+  }
+
+  public ArrayList<ArrayList<DistributorContract>> getOldContracts() {
+    return oldContracts;
+  }
+
   public void setDistributors(int distributors) {
     this.distributors = distributors;
   }
 
+  /**
+   * Sets the energy per distributor and notifies observers
+   * @param energyPerDistributor value to be replaced
+   */
   public void setEnergyPerDistributor(int energyPerDistributor) {
     this.energyPerDistributor = energyPerDistributor;
     notifyObservers();
   }
 
+  /**
+   * Removes a contract from the producer
+   * @param contract to be removed
+   */
   public void removeContract(DistributorContract contract) {
+    this.distributors++;
     this.currentContracts.remove(contract);
   }
 
+  /**
+   * Adds a contraact to the producer
+   * @param contract to be added
+   */
   public void addContract(DistributorContract contract) {
+    this.distributors--;
     this.currentContracts.add(contract);
   }
 
@@ -67,19 +96,12 @@ public class Producer {
       dc.setChanged();
     }
   }
-  public void moveContracts() {
-    this.oldContracts.add(this.currentContracts);
-  }
 
-  @Override
-  public String toString() {
-    return "Producer{" +
-            "id=" + id +
-            ", energyType=" + energyType +
-            ", maxDistributors=" + maxDistributors +
-            ", distributors=" + distributors +
-            ", priceKW=" + priceKW +
-            ", energyPerDist" + energyPerDistributor +
-            "}\n";
+  /**
+   * Moves the contracts to the old ones
+   * @param contracts to be moved
+   */
+  public void moveContracts(ArrayList<DistributorContract> contracts) {
+    this.oldContracts.add(contracts);
   }
 }

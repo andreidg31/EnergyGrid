@@ -2,7 +2,7 @@ package entities;
 
 import input.ProducerChanges;
 
-public class ProducerChange {
+public final class ProducerChange {
   private final int id;
   private final int newEnergy;
 
