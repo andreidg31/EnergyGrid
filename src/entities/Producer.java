@@ -3,8 +3,9 @@ package entities;
 import input.ProducerInput;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
-public final class Producer {
+public final class Producer extends Observable {
   private final int id;
   private EnergyType energyType;
   private int maxDistributors;
@@ -13,6 +14,7 @@ public final class Producer {
   private int energyPerDistributor;
   private ArrayList<ArrayList<DistributorContract>> oldContracts =
           new ArrayList<ArrayList<DistributorContract>>();
+
   private ArrayList<DistributorContract> currentContracts = new ArrayList<DistributorContract>();
 
   public Producer(ProducerInput input) {
@@ -70,6 +72,7 @@ public final class Producer {
    */
   public void setEnergyPerDistributor(int energyPerDistributor) {
     this.energyPerDistributor = energyPerDistributor;
+    setChanged();
     notifyObservers();
   }
 
@@ -80,6 +83,7 @@ public final class Producer {
   public void removeContract(DistributorContract contract) {
     this.distributors++;
     this.currentContracts.remove(contract);
+    this.deleteObserver(contract);
   }
 
   /**
@@ -89,12 +93,7 @@ public final class Producer {
   public void addContract(DistributorContract contract) {
     this.distributors--;
     this.currentContracts.add(contract);
-  }
-
-  private void notifyObservers() {
-    for (DistributorContract dc: this.currentContracts) {
-      dc.setChanged();
-    }
+    this.addObserver(contract);
   }
 
   /**

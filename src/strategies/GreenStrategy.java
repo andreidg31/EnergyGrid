@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public final class GreenStrategy implements Strategy {
 
-  private static final GreenStrategy instance = new GreenStrategy();
+  private static final GreenStrategy INSTANCE = new GreenStrategy();
 
   /**
    * For conding style;
@@ -18,7 +18,7 @@ public final class GreenStrategy implements Strategy {
   }
 
   public static GreenStrategy getInstance() {
-    return instance;
+    return INSTANCE;
   }
   @Override
   public ArrayList<Producer> selectProducers(ArrayList<Producer> producers) {

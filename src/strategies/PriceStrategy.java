@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public final class PriceStrategy implements Strategy {
 
-  private static final PriceStrategy instance = new PriceStrategy();
+  private static final PriceStrategy INSTANCE = new PriceStrategy();
 
   /**
    * For conding style;
@@ -18,7 +18,7 @@ public final class PriceStrategy implements Strategy {
   }
 
   public static PriceStrategy getInstance() {
-    return instance;
+    return INSTANCE;
   }
 
   @Override

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public final class QuantityStrategy implements Strategy {
 
-  private static final QuantityStrategy instance = new QuantityStrategy();
+  private static final QuantityStrategy INSTANCE = new QuantityStrategy();
 
   /**
    * For conding style;
@@ -18,7 +18,7 @@ public final class QuantityStrategy implements Strategy {
   }
 
   public static QuantityStrategy getInstance() {
-    return instance;
+    return INSTANCE;
   }
 
   @Override

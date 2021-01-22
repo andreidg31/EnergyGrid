@@ -1,8 +1,10 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
-public final class DistributorContract {
+public final class DistributorContract implements Observer {
   private Distributor distributor;
   private ArrayList<Producer> producers = new ArrayList<Producer>();
   private boolean isChanged = false;
@@ -56,5 +58,10 @@ public final class DistributorContract {
     for (Producer p: this.producers) {
       p.removeContract(this);
     }
+  }
+
+  @Override
+  public void update(Observable o, Object arg) {
+    this.setChanged();
   }
 }
